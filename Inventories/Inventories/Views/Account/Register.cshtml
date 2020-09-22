@@ -1,41 +1,79 @@
 ﻿@model Inventories.Models.RegisterViewModel
 @{
+    Layout = "~/Views/Shared/LayoutParaLogin.cshtml";
     ViewBag.Title = "Registrarse";
 }
 
-<h2>@ViewBag.Title.</h2>
+<body class="FondoEdificio">
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    <h4>Cree una cuenta nueva.</h4>
-    <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="LogoLogin">
+            <img class="LogoLogin" src="~/Images/icono.jpg" />
+            <p></p>
         </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Registrarse" />
-        </div>
-    </div>
-}
+        <div class="row fondotransparenteblanco ContenidoCentro modal-content">
+            <p></p>
+            <h4>Registrarse</h4>
 
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group">
+
+                <div class="ContenidoCentro">
+                    <input placeholder="Nombre Completo" title="Nombre Completo"
+                           @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+
+                <div class="ContenidoCentro">
+                    <input placeholder="Direccion" title="Dirección de residencia"
+                           @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+
+                <div class="ContenidoCentro">
+                    <input placeholder="Telefono" title="Ingrese numero telefonico"
+                           @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+
+                <div class="ContenidoCentro">
+                    <input placeholder="Correo" title="Ingrese un correo valido usuario@dominio.com"
+                           @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+
+                <div class="ContenidoCentro">
+                    <input placeholder="Contraseña" title="La contraseña debe tener una letra mayúscula, una minúscula, un caracter especial, un número y que sea mayor a 6 caracteres"
+                           @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+
+                <div class="ContenidoCentro">
+                    <input placeholder="Confirmar Contraseña" title="Confirmar la contraseña"
+                           @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="ContenidoCentro">
+                    <input type="submit" class="btn btn-primary BotonEstirado" value="Registrarse" />
+
+                </div>
+            </div>
+
+
+
+
+        </div>
+    }
+
+</body>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

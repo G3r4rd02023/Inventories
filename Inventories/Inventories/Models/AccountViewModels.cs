@@ -64,6 +64,18 @@ namespace Inventories.Models
 
     public class RegisterViewModel
     {
+        [Required]        
+        [Display(Name = "Direccion")]
+        public string Address { get; set; }
+
+        [Required]       
+        [Display(Name = "Telefono")]
+        public string Phone { get; set; }
+
+        [Required]       
+        [Display(Name = "FullName")]
+        public string FullName { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Correo electrónico")]
