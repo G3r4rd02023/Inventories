@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Inventories.Models
 {
-    public class Departments
+    public class Department
     {
         [Key]
         public int DepartmentID { get; set; }
@@ -17,5 +17,8 @@ namespace Inventories.Models
             MinimumLength = 3)]
         [Display(Name = "Departamento")]
         public string Name { get; set; }
+
+        public virtual ICollection<City> Cities { get; set; }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Web;
 
@@ -19,6 +20,14 @@ namespace Inventories.Models
         {
         }
 
-        public System.Data.Entity.DbSet<Inventories.Models.Departments> Departments { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+        }
+
+
+        public System.Data.Entity.DbSet<Inventories.Models.Department> Departments { get; set; }
+
+        public System.Data.Entity.DbSet<Inventories.Models.City> Cities { get; set; }
     }
 }

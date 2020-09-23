@@ -1,4 +1,4 @@
-﻿@model Inventories.Models.Departments
+﻿@model Inventories.Models.Department
 
 @{
     ViewBag.Title = "Details";
@@ -21,6 +21,39 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.DepartmentID },new { @class = "btn btn-info"}) |
-    @Html.ActionLink("Back to List", "Index",new { }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Add City", "AddCity", new {id = Model.DepartmentID }, new { @class = "btn btn-warning" }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.DepartmentID }, new { @class = "btn btn-info" }) |
+    @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-primary" })
 </p>
+<h5>Cities</h5>
+@if(Model.Cities.Count==0)
+{
+    <h6>No se encuentran ciudades registradas</h6>
+}
+else
+{
+    <table class="table table-striped">
+        <tr>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.Cities.FirstOrDefault().Name)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Cities)
+        {
+            <tr>
+                
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditCity", new { id = item.CityID },new { @class = "btn btn-success"}) |                  
+                    @Html.ActionLink("Delete", "DeleteCity", new { id = item.CityID }, new {@class = "btn btn-warning" })
+                </td>
+            </tr>
+        }
+
+    </table>
+}
