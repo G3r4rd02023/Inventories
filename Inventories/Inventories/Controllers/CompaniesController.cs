@@ -10,6 +10,7 @@ using System.Net;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using Inventories.Helpers;
 using Inventories.Models;
 
 namespace Inventories.Controllers
@@ -43,17 +44,16 @@ namespace Inventories.Controllers
         // GET: Companies/Create
         public ActionResult Create()
         {
-            ViewBag.CityID = new SelectList(db.Cities, "CityID", "Name");
-            ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "Name");
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name");
+            ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name");
             return View();
         }
 
         // POST: Companies/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
-        // más información vea https://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CompanyID,Name,Phone,Address,Logo,DepartmentID,CityID")] Company company)
+        public ActionResult Create(Company company)
         {
             if (ModelState.IsValid)
             {
@@ -65,8 +65,8 @@ namespace Inventories.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CityID = new SelectList(db.Cities, "CityID", "Name", company.CityID);
-            ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "Name", company.DepartmentID);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", company.CityID);
+            ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", company.DepartmentID);
             return View(company);
         }
 
@@ -82,8 +82,8 @@ namespace Inventories.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.CityID = new SelectList(db.Cities, "CityID", "Name", company.CityID);
-            ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "Name", company.DepartmentID);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", company.CityID);
+            ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", company.DepartmentID);
             return View(company);
         }
 
@@ -113,8 +113,8 @@ namespace Inventories.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.CityID = new SelectList(db.Cities, "CityID", "Name", company.CityID);
-            ViewBag.DepartmentID = new SelectList(db.Departments, "DepartmentID", "Name", company.DepartmentID);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", company.CityID);
+            ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", company.DepartmentID);
             return View(company);
         }
 
@@ -158,6 +158,14 @@ namespace Inventories.Controllers
 
             return File(memoryStream, "image/jpg");
         }
+
+        public JsonResult GetCities(int departmentId)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            var cities = db.Cities.Where(c => c.DepartmentID == departmentId);
+            return Json(cities);
+        }
+
 
         protected override void Dispose(bool disposing)
         {
