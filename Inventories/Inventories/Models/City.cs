@@ -22,6 +22,7 @@ namespace Inventories.Models
         public int DepartmentID { get; set; }
 
         public virtual Department Department { get; set; }
+        public virtual ICollection<Company> Companies { get; set; }
 
     }
 }
