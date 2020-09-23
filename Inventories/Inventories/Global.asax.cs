@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Inventories.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -14,12 +15,20 @@ namespace Inventories
     {
         protected void Application_Start()
         {
+            CheckRolesAndSuperUsers();
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<Models.InventoriesContext, Migrations.Configuration>());
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+        }
+
+        private void CheckRolesAndSuperUsers()
+        {
+            UsersHelper.CheckRole("Admin");
+            UsersHelper.CheckRole("User");
+            UsersHelper.CheckSuperUser();
         }
     }
 }

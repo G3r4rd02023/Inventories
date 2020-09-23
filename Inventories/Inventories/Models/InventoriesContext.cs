@@ -31,5 +31,7 @@ namespace Inventories.Models
         public System.Data.Entity.DbSet<Inventories.Models.City> Cities { get; set; }
 
         public System.Data.Entity.DbSet<Inventories.Models.Company> Companies { get; set; }
+
+        public System.Data.Entity.DbSet<Inventories.Models.User> Users { get; set; }
     }
 }

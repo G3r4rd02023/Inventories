@@ -15,84 +15,88 @@ using Inventories.Models;
 
 namespace Inventories.Controllers
 {
-    public class CompaniesController : Controller
+    public class UsersController : Controller
     {
         private InventoriesContext db = new InventoriesContext();
 
-        // GET: Companies
+        // GET: Users
         public ActionResult Index()
         {
-            var companies = db.Companies.Include(c => c.City).Include(c => c.Department);
-            return View(companies.ToList());
+            var users = db.Users.Include(u => u.City).Include(u => u.Company).Include(u => u.Department);
+            return View(users.ToList());
         }
 
-        // GET: Companies/Details/5
+        // GET: Users/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Company company = db.Companies.Find(id);
-            if (company == null)
+            User user = db.Users.Find(id);
+            if (user == null)
             {
                 return HttpNotFound();
             }
-            return View(company);
+            return View(user);
         }
 
-        // GET: Companies/Create
+        // GET: Users/Create
         public ActionResult Create()
         {
             ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name");
+            ViewBag.CompanyID = new SelectList(CombosHelpers.GetCompanies(), "CompanyID", "Name");
             ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name");
             return View();
         }
 
-        // POST: Companies/Create
-        
+        // POST: Users/Create
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Company company)
+        public ActionResult Create( User user)
         {
             if (ModelState.IsValid)
             {
                 HttpPostedFileBase FileBase = Request.Files[0];
                 WebImage image = new WebImage(FileBase.InputStream);
-                company.Logo = image.GetBytes();
-                db.Companies.Add(company);
+                user.Foto = image.GetBytes();
+                db.Users.Add(user);
                 db.SaveChanges();
+                UsersHelper.CreateUserASP(user.UserName, "User");
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", company.CityID);
-            ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", company.DepartmentID);
-            return View(company);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", user.CityID);
+            ViewBag.CompanyID = new SelectList(CombosHelpers.GetCompanies(), "CompanyID", "Name", user.CompanyID);
+            ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", user.DepartmentID);
+            return View(user);
         }
 
-        // GET: Companies/Edit/5
+        // GET: Users/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Company company = db.Companies.Find(id);
-            if (company == null)
+            User user = db.Users.Find(id);
+            if (user == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", company.CityID);
-            ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", company.DepartmentID);
-            return View(company);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", user.CityID);
+            ViewBag.CompanyID = new SelectList(CombosHelpers.GetCompanies(), "CompanyID", "Name", user.CompanyID);
+            ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", user.DepartmentID);
+            return View(user);
         }
 
-        // POST: Companies/Edit/5
+        // POST: Users/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit( Company company)
+        public ActionResult Edit([Bind(Include = "UserID,UserName,FirstName,LastName,Phone,Foto,DepartmentID,CityID,CompanyID")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -101,53 +105,54 @@ namespace Inventories.Controllers
                 HttpPostedFileBase FileBase = Request.Files[0];
                 if (FileBase == null)
                 {
-                    imagenActual = db.Companies.SingleOrDefault(t => t.CompanyID == company.CompanyID).Logo;
+                    imagenActual = db.Users.SingleOrDefault(t => t.UserID == user.UserID).Foto;
                 }
                 else
                 {
                     WebImage image = new WebImage(FileBase.InputStream);
-                    company.Logo = image.GetBytes();
+                    user.Foto = image.GetBytes();
 
                 }
-                db.Entry(company).State = EntityState.Modified;
+                db.Entry(user).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", company.CityID);
-            ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", company.DepartmentID);
-            return View(company);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", user.CityID);
+            ViewBag.CompanyID = new SelectList(CombosHelpers.GetCompanies(), "CompanyID", "Name", user.CompanyID);
+            ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", user.DepartmentID);
+            return View(user);
         }
 
-        // GET: Companies/Delete/5
+        // GET: Users/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Company company = db.Companies.Find(id);
-            if (company == null)
+            User user = db.Users.Find(id);
+            if (user == null)
             {
                 return HttpNotFound();
             }
-            return View(company);
+            return View(user);
         }
 
-        // POST: Companies/Delete/5
+        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Company company = db.Companies.Find(id);
-            db.Companies.Remove(company);
+            User user = db.Users.Find(id);
+            db.Users.Remove(user);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
         public ActionResult GetImage(int id)
         {
-            Company company = db.Companies.Find(id);
-            byte[] byteImage = company.Logo;
+            User user = db.Users.Find(id);
+            byte[] byteImage = user.Foto;
 
             MemoryStream memoryStream = new MemoryStream(byteImage);
             Image image = Image.FromStream(memoryStream);
