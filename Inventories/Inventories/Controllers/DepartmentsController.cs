@@ -10,6 +10,7 @@ using Inventories.Models;
 
 namespace Inventories.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DepartmentsController : Controller
     {
         private InventoriesContext db = new InventoriesContext();

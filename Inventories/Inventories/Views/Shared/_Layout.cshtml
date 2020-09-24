@@ -35,35 +35,34 @@
                             <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
                             <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
                             <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
-                            <li>@Html.ActionLink("Departamentos", "Index", "Departments")</li>
-                            <li>@Html.ActionLink("Compañias", "Index", "Companies")</li>
-                            <li>@Html.ActionLink("Usuarios", "Index", "Users")</li>
+
+
+
                         </ul>
                     </li>
 
 
-                    @if ((User.IsInRole("Crear")) || (User.IsInRole("Editar")) || (User.IsInRole("Eliminar")))
+                    @if ((User.IsInRole("Admin")))
                     {
                         <li class="dropdown" id="menuDropDown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Administracion <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li>@Html.ActionLink("Clientes", "Index", "Clientes")</li>
-                                <li>@Html.ActionLink("Nacionalidades", "Index", "Nacionalidades")</li>
-                                <li>@Html.ActionLink("Proveedores", "Index", "Proveedores")</li>
+                                <li>@Html.ActionLink("Departamentos", "Index", "Departments")</li>
+                                <li>@Html.ActionLink("Compañias", "Index", "Companies")</li>
+                                <li>@Html.ActionLink("Usuarios", "Index", "Users")</li>
                             </ul>
                         </li>
-                        <li class="dropdown" id="menuDropDown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Seguridad <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>@Html.ActionLink("Permisos", "Index", "User")</li>
-                                <li>@Html.ActionLink("Configuracion Preguntas", "Create", "Preguntas")</li>
-                                <li>@Html.ActionLink("Bitacora", "Index", "Bitacoras")</li>
-                                <li>@Html.ActionLink("Objetos", "Index", "Objetos")</li>
-                                <li>@Html.ActionLink("Parametros", "Index", "Parametros")</li>
-                                <li>@Html.ActionLink("Usuarios", "Index", "Usuarios")</li>
-                                <li>@Html.ActionLink("Estados", "Index", "Estados")</li>
-                            </ul>
-                        </li>
+                    }
+                    @if ((User.IsInRole("User")))
+                    { 
+                    <li class="dropdown" id="menuDropDown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Operaciones <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>@Html.ActionLink("Categorias", "Index", "Categories")</li>
+                            <li>@Html.ActionLink("Productos", "Index", "Products")</li>
+                            <li>@Html.ActionLink("Impuestos", "Index", "Taxes")</li>
+                        </ul>
+                    </li>
                     }
 
                 </ul>

@@ -33,5 +33,11 @@ namespace Inventories.Models
         public System.Data.Entity.DbSet<Inventories.Models.Company> Companies { get; set; }
 
         public System.Data.Entity.DbSet<Inventories.Models.User> Users { get; set; }
+
+        public System.Data.Entity.DbSet<Inventories.Models.Category> Categories { get; set; }
+
+        public System.Data.Entity.DbSet<Inventories.Models.Tax> Taxes { get; set; }
+
+        public System.Data.Entity.DbSet<Inventories.Models.Product> Products { get; set; }
     }
 }

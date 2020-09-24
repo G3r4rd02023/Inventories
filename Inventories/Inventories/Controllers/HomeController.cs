@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Inventories.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,8 +9,12 @@ namespace Inventories.Controllers
 {
     public class HomeController : Controller
     {
+
+        private InventoriesContext db = new InventoriesContext();
+
         public ActionResult Index()
         {
+            
             return View();
         }
 

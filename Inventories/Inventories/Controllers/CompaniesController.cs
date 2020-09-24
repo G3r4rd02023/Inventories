@@ -15,6 +15,7 @@ using Inventories.Models;
 
 namespace Inventories.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CompaniesController : Controller
     {
         private InventoriesContext db = new InventoriesContext();
