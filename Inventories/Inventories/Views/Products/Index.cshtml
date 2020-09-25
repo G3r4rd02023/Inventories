@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Inventories.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create",new{ },new {@class="btn btn-primary" })
+</p>
+<table class="table table-striped">
+    <tr>
+        @*<th>
+            @Html.DisplayNameFor(model => model.Category.Descripcion)
+        </th>        
+        <th>
+            @Html.DisplayNameFor(model => model.Tax.Description)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Code)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Image)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Remarks)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.Category.Descripcion)
+        </td>      
+        <td>
+            @Html.DisplayFor(modelItem => item.Tax.Description)
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Code)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Price)
+        </td>
+        <td>
+            <img width="100" src="@Url.Action("GetImage","Products",new { id= item.ProductID})" alt="Image" />
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Remarks)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ProductID },new {@class="btn btn-success" }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ProductID },new { @class = "btn btn-info" }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ProductID }, new { @class = "btn btn-warning" })
+        </td>
+    </tr>
+}
+
+</table>

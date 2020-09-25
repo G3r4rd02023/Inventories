@@ -46,5 +46,6 @@ namespace Inventories.Models
         public virtual ICollection<User> Users { get; set; }
         public virtual ICollection<Category> Categories { get; set; }
         public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Warehouse> Warehouses { get; set; }
     }
 }

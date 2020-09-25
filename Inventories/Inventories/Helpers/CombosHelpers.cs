@@ -47,6 +47,29 @@ namespace Inventories.Helpers
             return companies.OrderBy(d => d.Name).ToList();
         }
 
+        public static List<Tax> GetTaxes(int companyID)
+        {
+            var taxes = db.Taxes.Where(c => c.CompanyID == companyID).ToList();
+            taxes.Add(new Tax
+            {
+                TaxID = 0,
+                Description = "[Selecciona un Impuesto...]",
+            });
+
+            return taxes.OrderBy(d => d.Description).ToList();
+        }
+
+        public static List<Category> GetCategories(int companyID)
+        {
+            var categoria = db.Categories.Where(c=>c.CompanyID == companyID).ToList();
+            categoria.Add(new Category
+            {
+                CategoryID = 0,
+                Descripcion = "[Selecciona una Categoria...]",
+            });
+
+            return categoria.OrderBy(d => d.Descripcion).ToList();
+        }
         public void Dispose()
         {
             db.Dispose();
