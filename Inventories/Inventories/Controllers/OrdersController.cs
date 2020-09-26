@@ -44,7 +44,7 @@ namespace Inventories.Controllers
            
             var user = db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             ViewBag.ProductId = new SelectList(CombosHelpers.GetProducts(user.CompanyID), "ProductId", "Description");
-            return View();
+            return PartialView();
         }
 
         [HttpPost]
@@ -81,7 +81,7 @@ namespace Inventories.Controllers
            
             var user = db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             ViewBag.ProductId = new SelectList(CombosHelpers.GetProducts(user.CompanyID), "ProductId", "Description");
-            return View(view);
+            return PartialView(view);
         }
 
 
