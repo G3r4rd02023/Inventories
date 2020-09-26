@@ -30,7 +30,7 @@
             @Html.DisplayNameFor(model => model.Image)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Remarks)
+            @Html.DisplayNameFor(model => model.Stock)
         </th>
         <th></th>
     </tr>
@@ -55,8 +55,8 @@
         <td>
             <img width="100" src="@Url.Action("GetImage","Products",new { id= item.ProductID})" alt="Image" />
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Remarks)
+        <td align="right">
+            @Html.DisplayFor(modelItem => item.Stock)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ProductID },new {@class="btn btn-success" }) |

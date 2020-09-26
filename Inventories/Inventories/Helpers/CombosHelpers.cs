@@ -1,5 +1,6 @@
 ﻿using Inventories.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -21,6 +22,18 @@ namespace Inventories.Helpers
             });
 
             return departments.OrderBy(d => d.Name).ToList();
+        }
+
+        public static List<Product> GetProducts(int companyID)
+        {
+            var product = db.Products.Where(p => p.CompanyID == companyID).ToList();
+            product.Add(new Product
+            {
+                ProductID = 0,
+                Description = "[Selecciona un Producto...]",
+            });
+
+            return product.OrderBy(p => p.Description).ToList();
         }
 
         public static List<City> GetCities()
@@ -57,6 +70,18 @@ namespace Inventories.Helpers
             });
 
             return taxes.OrderBy(d => d.Description).ToList();
+        }
+
+        public static List<Customer> GetCustomers(int companyID)
+        {
+            var customer = db.Customers.Where(c => c.CompanyId == companyID).ToList();
+            customer.Add(new Customer
+            {
+                CustomerId = 0,
+                FirstName = "[Selecciona un Cliente...]",
+            });
+
+            return customer.OrderBy(c => c.FirstName).ThenBy(c => c.LastName).ToList();
         }
 
         public static List<Category> GetCategories(int companyID)

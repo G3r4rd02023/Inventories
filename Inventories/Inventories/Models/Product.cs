@@ -54,6 +54,9 @@ namespace Inventories.Models
         [Display(Name = "Image")]
         public byte[] Image { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = false)]
+        public decimal Stock { get { return Inventories.Sum(i => i.Stock); } } 
+
         [Display(Name = "Comentarios")]
         [DataType(DataType.MultilineText)]
         public string Remarks { get; set; }
@@ -61,5 +64,9 @@ namespace Inventories.Models
         public virtual Company Company { get; set; }
         public virtual Category Category { get; set; }
         public virtual Tax Tax { get; set; }
+
+        public virtual ICollection<Inventory> Inventories { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual ICollection<OrderDetailTmp> OrderDetailTmps { get; set; }
     }
 }

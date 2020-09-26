@@ -26,20 +26,33 @@ namespace Inventories.Models
         }
 
 
-        public System.Data.Entity.DbSet<Inventories.Models.Department> Departments { get; set; }
+        public DbSet<Department> Departments { get; set; }
 
-        public System.Data.Entity.DbSet<Inventories.Models.City> Cities { get; set; }
+        public DbSet<City> Cities { get; set; }
 
-        public System.Data.Entity.DbSet<Inventories.Models.Company> Companies { get; set; }
+        public DbSet<Company> Companies { get; set; }
 
-        public System.Data.Entity.DbSet<Inventories.Models.User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
 
-        public System.Data.Entity.DbSet<Inventories.Models.Category> Categories { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
-        public System.Data.Entity.DbSet<Inventories.Models.Tax> Taxes { get; set; }
+        public DbSet<Tax> Taxes { get; set; }
 
-        public System.Data.Entity.DbSet<Inventories.Models.Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
 
-        public System.Data.Entity.DbSet<Inventories.Models.Warehouse> Warehouses { get; set; }
+        public DbSet<Warehouse> Warehouses { get; set; }
+
+        public DbSet<Inventory> Inventories { get; set; }
+
+        public DbSet<Customer> Customers { get; set; }
+
+        public DbSet<State> States { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+
+        public DbSet<OrderDetailTmp> OrderDetailTmps { get; set; }
+
     }
 }

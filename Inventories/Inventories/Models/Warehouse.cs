@@ -44,6 +44,9 @@ namespace Inventories.Models
         public virtual City City { get; set; }
         public virtual Company Company { get; set; }
 
+        public virtual ICollection<Inventory>Inventories { get; set; }
+
+
 
     }
 }
