@@ -45,7 +45,7 @@ namespace Inventories.Controllers
         // GET: Users/Create
         public ActionResult Create()
         {
-            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name");
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(0), "CityID", "Name");
             ViewBag.CompanyID = new SelectList(CombosHelpers.GetCompanies(), "CompanyID", "Name");
             ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name");
             return View();
@@ -68,7 +68,7 @@ namespace Inventories.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", user.CityID);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(user.DepartmentID), "CityID", "Name", user.CityID);
             ViewBag.CompanyID = new SelectList(CombosHelpers.GetCompanies(), "CompanyID", "Name", user.CompanyID);
             ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", user.DepartmentID);
             return View(user);
@@ -86,18 +86,17 @@ namespace Inventories.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", user.CityID);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(user.DepartmentID), "CityID", "Name", user.CityID);
             ViewBag.CompanyID = new SelectList(CombosHelpers.GetCompanies(), "CompanyID", "Name", user.CompanyID);
             ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", user.DepartmentID);
             return View(user);
         }
 
         // POST: Users/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
-        // más información vea https://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "UserID,UserName,FirstName,LastName,Phone,Foto,DepartmentID,CityID,CompanyID")] User user)
+        public ActionResult Edit(User user)
         {
             if (ModelState.IsValid)
             {
@@ -118,7 +117,7 @@ namespace Inventories.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", user.CityID);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(user.DepartmentID), "CityID", "Name", user.CityID);
             ViewBag.CompanyID = new SelectList(CombosHelpers.GetCompanies(), "CompanyID", "Name", user.CompanyID);
             ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", user.DepartmentID);
             return View(user);

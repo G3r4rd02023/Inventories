@@ -54,5 +54,8 @@ namespace Inventories.Models
 
         public DbSet<OrderDetailTmp> OrderDetailTmps { get; set; }
 
+        public DbSet<CompanyCustomers> CompanyCustomers { get; set; }
+
+
     }
 }

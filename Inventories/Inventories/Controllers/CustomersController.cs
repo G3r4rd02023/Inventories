@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using Inventories.Helpers;
 using Inventories.Models;
@@ -20,8 +21,20 @@ namespace Inventories.Controllers
         public ActionResult Index()
         {
             var user = db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var customers = db.Customers.Where(c => c.CompanyId == user.CompanyID).Include(c => c.City).Include(c => c.Department);
-            return View(customers.ToList());
+            var qry = (from cu in db.Customers
+                       join cc in db.CompanyCustomers on cu.CustomerId equals cc.CustomerID
+                       join co in db.Companies on cc.CompanyID equals co.CompanyID
+                       where co.CompanyID == user.CompanyID
+                       select new { cu }).ToList();
+
+            var customers = new List<Customer>();
+            foreach (var item in qry)
+            {
+                customers.Add(item.cu);
+            }
+
+            return View(customers);
+
         }
 
         // GET: Customers/Details/5
@@ -43,29 +56,62 @@ namespace Inventories.Controllers
         public ActionResult Create()
         {
             var user = db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            ViewBag.CityId = new SelectList(CombosHelpers.GetCities(), "CityID", "Name");           
+            ViewBag.CityId = new SelectList(CombosHelpers.GetCities(0), "CityID", "Name");
             ViewBag.DepartmentId = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name");
-            var customer = new Customer { CompanyId = user.CompanyID, };
-            return View(customer);
+
+            return View();
         }
 
         // POST: Customers/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
-        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create( Customer customer)
         {
             if (ModelState.IsValid)
             {
-                db.Customers.Add(customer);
-                db.SaveChanges();
-                UsersHelper.CreateUserASP(customer.UserName, "Customer");
-                return RedirectToAction("Index");
+               using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        db.Customers.Add(customer);
+                        var response = DBHelper.SaveChanges(db);
+                        if (!response.Succeeded)
+                        {
+                            ModelState.AddModelError(string.Empty, response.Message);
+                            transaction.Rollback();
+                            ViewBag.CityId = new SelectList(CombosHelpers.GetCities(customer.DepartmentId), "CityID", "Name", customer.CityId);
+                            ViewBag.DepartmentId = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", customer.DepartmentId);
+                            return View(customer);
+                        }
+
+                        UsersHelper.CreateUserASP(customer.UserName, "Customer");
+                        var user = db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                        var companyCustomer = new CompanyCustomers
+                        {
+                            CompanyID = user.CompanyID,
+                            CustomerID = customer.CustomerId,
+                        };
+
+                        db.CompanyCustomers.Add(companyCustomer);
+                        db.SaveChanges();
+
+                        transaction.Commit();
+
+                        return RedirectToAction("Index");
+                    }
+
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        ModelState.AddModelError(string.Empty, ex.Message);
+                    }
+                }
             }
 
-            ViewBag.CityId = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", customer.CityId);          
-            ViewBag.DepartmentId = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", customer.DepartmentId);
+            
+            ViewBag.CityId = new SelectList(CombosHelpers.GetCities(customer.DepartmentId), "CityID", "Name", customer.CityId);
+            ViewBag.DepartmentId = new SelectList(CombosHelpers.GetDepartments(), "DepartmentId", "Name", customer.DepartmentId);
             return View(customer);
         }
 
@@ -81,7 +127,7 @@ namespace Inventories.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.CityId = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", customer.CityId);
+            ViewBag.CityId = new SelectList(CombosHelpers.GetCities(customer.DepartmentId), "CityID", "Name", customer.CityId);
             ViewBag.DepartmentId = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", customer.DepartmentId);
             return View(customer);
         }
@@ -94,10 +140,16 @@ namespace Inventories.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(customer).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError(string.Empty, response.Message);
+
             }
-            ViewBag.CityId = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", customer.CityId);
+            ViewBag.CityId = new SelectList(CombosHelpers.GetCities(customer.DepartmentId), "CityID", "Name", customer.CityId);
             ViewBag.DepartmentId = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", customer.DepartmentId);
             return View(customer);
         }
@@ -123,10 +175,27 @@ namespace Inventories.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Customer customer = db.Customers.Find(id);
-            db.Customers.Remove(customer);
-            db.SaveChanges();
-            //UsersHelper.DeleteUser(customer.UserName);
-            return RedirectToAction("Index");
+            var user = db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var companyCustomer = db.CompanyCustomers.Where(cc => cc.CompanyID == user.CompanyID && cc.CustomerID == customer.CustomerId).FirstOrDefault();
+           
+            using(var transaction = db.Database.BeginTransaction())
+            {
+                db.CompanyCustomers.Remove(companyCustomer);
+                db.Customers.Remove(customer);
+                var response = DBHelper.SaveChanges(db);
+
+                if (response.Succeeded)
+                {
+                    transaction.Commit();
+                    return RedirectToAction("Index");
+                }
+
+                transaction.Rollback();
+                ModelState.AddModelError(string.Empty, response.Message);
+                return View(customer);
+            }
+                   
+                  
         }
 
         protected override void Dispose(bool disposing)

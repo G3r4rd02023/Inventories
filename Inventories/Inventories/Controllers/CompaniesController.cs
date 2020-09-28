@@ -12,6 +12,7 @@ using System.Web.Helpers;
 using System.Web.Mvc;
 using Inventories.Helpers;
 using Inventories.Models;
+using PagedList;
 
 namespace Inventories.Controllers
 {
@@ -45,7 +46,7 @@ namespace Inventories.Controllers
         // GET: Companies/Create
         public ActionResult Create()
         {
-            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name");
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(0), "CityID", "Name");
             ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name");
             return View();
         }
@@ -66,7 +67,7 @@ namespace Inventories.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", company.CityID);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(company.DepartmentID), "CityID", "Name", company.CityID);
             ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", company.DepartmentID);
             return View(company);
         }
@@ -83,7 +84,7 @@ namespace Inventories.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", company.CityID);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(company.DepartmentID), "CityID", "Name", company.CityID);
             ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", company.DepartmentID);
             return View(company);
         }
@@ -114,7 +115,7 @@ namespace Inventories.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(), "CityID", "Name", company.CityID);
+            ViewBag.CityID = new SelectList(CombosHelpers.GetCities(company.DepartmentID), "CityID", "Name", company.CityID);
             ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name", company.DepartmentID);
             return View(company);
         }

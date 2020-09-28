@@ -79,10 +79,13 @@ namespace Inventories.Controllers
                 WebImage image = new WebImage(FileBase.InputStream);
                 product.Image = image.GetBytes();
                 db.Products.Add(product);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                ModelState.AddModelError(string.Empty, response.Message);
             }
-
             ViewBag.CategoryID = new SelectList(CombosHelpers.GetCategories(user.CompanyID), "CategoryID", "Descripcion", product.CategoryID);           
             ViewBag.TaxID = new SelectList(CombosHelpers.GetTaxes(user.CompanyID), "TaxID", "Description", product.TaxID);
             return View(product);
@@ -134,8 +137,14 @@ namespace Inventories.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(product).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError(string.Empty, response.Message);
+
             }
             ViewBag.CategoryID = new SelectList(CombosHelpers.GetCategories(product.CompanyID), "CategoryID", "Descripcion", product.CategoryID);
             ViewBag.TaxID = new SelectList(CombosHelpers.GetTaxes(product.CompanyID), "TaxID", "Description", product.TaxID);
@@ -164,8 +173,13 @@ namespace Inventories.Controllers
         {
             Product product = db.Products.Find(id);
             db.Products.Remove(product);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            var response = DBHelper.SaveChanges(db);
+            if (response.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError(string.Empty, response.Message);
+            return View(product);
         }
 
         public ActionResult GetImage(int id)

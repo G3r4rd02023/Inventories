@@ -1,11 +1,17 @@
-﻿
+﻿@model Inventories.Models.User
 
 @{
     ViewBag.Title = "Home Page";
 }
 
 <div class="jumbotron">
-
+  
+        @if (Model != null)
+         { 
+            <img width="200" height="200" "@Url.Action("GetImage","Home", new {id=Model.CompanyID})" />
+         } 
+        
+   
 </div>
 
 <div class="row">

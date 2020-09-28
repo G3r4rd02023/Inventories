@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Inventories.Helpers;
 using Inventories.Models;
 
 namespace Inventories.Controllers
@@ -65,8 +66,12 @@ namespace Inventories.Controllers
             if (ModelState.IsValid)
             {
                 db.Categories.Add(category);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                ModelState.AddModelError(string.Empty, response.Message);
             }
 
             ViewBag.CompanyID = new SelectList(db.Companies, "CompanyID", "Name", category.CompanyID);
@@ -98,8 +103,14 @@ namespace Inventories.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(category).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError(string.Empty, response.Message);
+
             }
             ViewBag.CompanyID = new SelectList(db.Companies, "CompanyID", "Name", category.CompanyID);
             return View(category);
@@ -127,8 +138,13 @@ namespace Inventories.Controllers
         {
             Category category = db.Categories.Find(id);
             db.Categories.Remove(category);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            var response = DBHelper.SaveChanges(db);
+            if (response.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError(string.Empty, response.Message);           
+            return View(category);
         }
 
         protected override void Dispose(bool disposing)

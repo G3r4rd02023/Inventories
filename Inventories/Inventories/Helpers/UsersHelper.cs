@@ -15,6 +15,35 @@ namespace Inventories.Helpers
         private static ApplicationDbContext userContext = new ApplicationDbContext();
         private static InventoriesContext db = new InventoriesContext();
 
+        
+        
+        public static bool DeleteUser(string userName,string rolName)
+        {
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(userContext));
+            var userASP = userManager.FindByEmail(userName);
+            if(userASP == null)
+            {
+                return false;
+            }
+            var response = userManager.RemoveFromRole(userASP.Id, rolName);
+            return response.Succeeded;
+        }
+
+        public static bool UpdateUserName(string currentUserName, string newUserName)
+        {
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(userContext));
+            var userASP = userManager.FindByEmail(currentUserName);
+            if (userASP == null)
+            {
+                return false;
+            }
+
+            userASP.UserName = newUserName;
+            userASP.Email = newUserName;
+            var response = userManager.Update(userASP);
+            return response.Succeeded;
+        }
+
         public static void CheckRole(string roleName)
         {
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(userContext));
@@ -58,13 +87,18 @@ namespace Inventories.Helpers
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(userContext));
 
-            var userASP = new ApplicationUser
+            var userASP = userManager.FindByEmail(email);
+            if (userASP == null)
             {
-                Email = email,
-                UserName = email,
-            };
-
-            userManager.Create(userASP, password);
+                userASP = new ApplicationUser
+                {
+                    Email = email,
+                    UserName = email,
+                };
+                userManager.Create(userASP, password);
+            }
+            
+            
             userManager.AddToRole(userASP.Id, roleName);
         }
 
@@ -101,6 +135,8 @@ namespace Inventories.Helpers
 
             await MailHelper.SendMail(email, subject, body);
         }
+
+       
 
         public void Dispose()
         {

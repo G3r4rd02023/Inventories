@@ -12,15 +12,12 @@ namespace Inventories.Models
         [Key]
         public int CustomerId { get; set; }
 
-        [Required(ErrorMessage = "El campo {0} es requerido")]
-        [Range(1, double.MaxValue, ErrorMessage = "Debes seleccionar {0}")]
-        [Display(Name = "Compañia")]
-        public int CompanyId { get; set; }
+        
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [MaxLength(256, ErrorMessage = "El registro {0} debe tener  {1} caracteres de longitud")]
         [Display(Name = "Email")]
-        [Index("Customer_UserName_Index", IsUnique = true)]
+        
         [DataType(DataType.EmailAddress)]
         public string UserName { get; set; }
 
@@ -61,7 +58,7 @@ namespace Inventories.Models
 
         public virtual City City { get; set; }
 
-        public virtual Company Company { get; set; }
+        public virtual ICollection<CompanyCustomers> CompanyCustomers { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
 

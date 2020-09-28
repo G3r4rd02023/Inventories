@@ -36,9 +36,17 @@ namespace Inventories.Helpers
             return product.OrderBy(p => p.Description).ToList();
         }
 
-        public static List<City> GetCities()
+        public static List<Product> GetProducts(int companyId, bool sw)
         {
-            var cities = db.Cities.ToList();
+           
+            var products = db.Products.Where(p => p.CompanyID == companyId).ToList();
+            return products.OrderBy(p => p.Description).ToList();
+        }
+
+
+        public static List<City> GetCities(int departmentId)
+        {
+            var cities = db.Cities.Where(c => c.DepartmentID == departmentId).ToList();
             cities.Add(new City
             {
                 CityID = 0,
@@ -74,7 +82,18 @@ namespace Inventories.Helpers
 
         public static List<Customer> GetCustomers(int companyID)
         {
-            var customer = db.Customers.Where(c => c.CompanyId == companyID).ToList();
+
+            var qry = (from cu in db.Customers
+                       join cc in db.CompanyCustomers on cu.CustomerId equals cc.CustomerID
+                       join co in db.Companies on cc.CompanyID equals co.CompanyID
+                       where co.CompanyID == companyID
+                       select new { cu }).ToList();
+
+            var customer = new List<Customer>();
+            foreach (var item in qry)
+            {
+                customer.Add(item.cu);
+            }
             customer.Add(new Customer
             {
                 CustomerId = 0,
