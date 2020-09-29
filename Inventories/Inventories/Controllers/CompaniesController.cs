@@ -46,6 +46,7 @@ namespace Inventories.Controllers
         // GET: Companies/Create
         public ActionResult Create()
         {
+            var user = db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             ViewBag.CityID = new SelectList(CombosHelpers.GetCities(0), "CityID", "Name");
             ViewBag.DepartmentID = new SelectList(CombosHelpers.GetDepartments(), "DepartmentID", "Name");
             return View();
@@ -90,8 +91,7 @@ namespace Inventories.Controllers
         }
 
         // POST: Companies/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
-        // más información vea https://go.microsoft.com/fwlink/?LinkId=317598.
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit( Company company)

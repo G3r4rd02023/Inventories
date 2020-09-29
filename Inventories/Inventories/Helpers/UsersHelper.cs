@@ -72,14 +72,18 @@ namespace Inventories.Helpers
         public static void CreateUserASP(string email, string roleName)
         {
             var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(userContext));
-
-            var userASP = new ApplicationUser
+            var userASP = userManager.FindByEmail(email);
+           
             {
-                Email = email,
-                UserName = email,
-            };
+                userASP = new ApplicationUser
+                {
+                    Email = email,
+                    UserName = email,
+                };
+                userManager.Create(userASP, email);
+        };
 
-            userManager.Create(userASP, email);
+            
             userManager.AddToRole(userASP.Id, roleName);
         }
 

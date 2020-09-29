@@ -145,8 +145,15 @@ namespace Inventories.Controllers
         {
             User user = db.Users.Find(id);
             db.Users.Remove(user);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            var response = DBHelper.SaveChanges(db);
+            if (response.Succeeded)
+            {
+                UsersHelper.DeleteUser(user.UserName, "User");
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError(string.Empty, response.Message);
+            return View(user);
         }
 
         public ActionResult GetImage(int id)

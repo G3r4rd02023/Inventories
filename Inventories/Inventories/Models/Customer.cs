@@ -11,9 +11,7 @@ namespace Inventories.Models
     {
         [Key]
         public int CustomerId { get; set; }
-
-        
-
+       
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [MaxLength(256, ErrorMessage = "El registro {0} debe tener  {1} caracteres de longitud")]
         [Display(Name = "Email")]
